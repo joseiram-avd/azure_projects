@@ -4,5 +4,4 @@
 
 azure-functions
 wget
-beautifulsoup4
-beautifulsoup4==4.11.1
+beautifulsoup4 
