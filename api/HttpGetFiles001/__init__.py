@@ -1,6 +1,10 @@
 import logging
+import wget
+import beautifulsoup4
+
 
 import azure.functions as func
+
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
