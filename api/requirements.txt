@@ -5,4 +5,4 @@
 azure-functions
 wget
 beautifulsoup4
-scrapy
+scrapy==2.6

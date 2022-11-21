@@ -8,43 +8,45 @@ import scrapy
 from scrapy.crawler import CrawlerProcess
 import re
 
-class QuotesToCsv(scrapy.Spider):
-    """scrape first line of  quotes from `wikiquote` by 
-    Maynard James Keenan and save to json file"""
-    name = "MJKQuotesToCsv"
-    start_urls = [
-        'https://en.wikiquote.org/wiki/Maynard_James_Keenan',
-    ]
+import scrapy
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
+
+class DownfilesItem(scrapy.Item):
+	# define the fields for your item here like:
+	file_urls = scrapy.Field()
+	original_file_name = scrapy.Field()
+	files = scrapy.Field
+
+class NirsoftSpider(CrawlSpider):
+    name = 'nirsoft'
+    allowed_domains = ['www.nirsoft.net']
+    start_urls = ['http://www.nirsoft.net/']
+    # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
     custom_settings = {
         'ITEM_PIPELINES': {
-            '__main__.ExtractFirstLine': 1
+            '__main__.DownfilesItem': 1
         },
-        'FEEDS': {
-            'quotes.csv': {
-                'format': 'csv',
-                'overwrite': True
-            }
-        }
+        
+        'FILES_STORE' : R'C:\nirsoft'
     }
 
-    def parse(self, response):
-        """parse data from urls"""
-        for quote in response.css('div.mw-parser-output > ul > li'):
-            yield {'quote': quote.extract()}
+    rules = (
+        Rule(LinkExtractor(allow=r'utils/'),
+        callback='parse_item', follow = True),
+    ) 
 
-
-class ExtractFirstLine(object):
-    def process_item(self, item, spider):
-        """text processing"""
-        lines = dict(item)["quote"].splitlines()
-        first_line = self.__remove_html_tags__(lines[0])
-
-        return {'quote': first_line}
-
-    def __remove_html_tags__(self, text):
-        """remove html tags from string"""
-        html_tags = re.compile('<.*?>')
-        return re.sub(html_tags, '', text)
+    def parse_item(self, response):
+        file_url = response.css('.downloadline::attr(href)').get()
+        file_url = response.urljoin(file_url)
+        print( response.url )
+        file_extension = file_url.split('.')[-1]
+        # if file_extension not in ('zip', 'exe', 'msi'):
+        #     return
+        item = DownfilesItem()
+        item['file_urls'] = [file_url]
+        item['original_file_name'] = file_url.split('/')[-1]
+        yield item
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -62,7 +64,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
     else:
         process = CrawlerProcess()
-        process.crawl(QuotesToCsv)
+        process.crawl(NirsoftSpider)
         process.start()
 
         return func.HttpResponse(
