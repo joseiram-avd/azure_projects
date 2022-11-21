@@ -1,6 +1,6 @@
 import logging
 import wget
-import beautifulsoup4
+from bs4 import BeautifulSoup
 
 
 import azure.functions as func
