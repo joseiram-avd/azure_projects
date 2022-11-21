@@ -30,7 +30,6 @@ class NirsoftSpider(CrawlSpider):
         
         'FILES_STORE' : R'C:\nirsoft'
     }
-
     rules = (
         Rule(LinkExtractor(allow=r'utils/'),
         callback='parse_item', follow = True),
