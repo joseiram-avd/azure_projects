@@ -4,4 +4,5 @@
 
 azure-functions
 wget
-beautifulsoup4 
+beautifulsoup4
+scrapy
