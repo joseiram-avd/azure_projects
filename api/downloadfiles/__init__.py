@@ -11,9 +11,10 @@ import re
  
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+
 # Reactor restart
-from crochet import setup, wait_for
-setup()
+# from crochet import setup, wait_for
+# setup()
 
 class DownfilesItem(scrapy.Item):
 	# define the fields for your item here like:
@@ -24,7 +25,12 @@ class DownfilesItem(scrapy.Item):
 class NirsoftSpider(CrawlSpider):
     name = 'nirsoft'
     # allowed_domains = ['dados.antt.gov.br']
-    start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
+    # start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
+
+    allowed_domains = ['www.nirsoft.net']
+    start_urls = ['http://www.nirsoft.net/']
+
+   
     # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
     custom_settings = {
         'ITEM_PIPELINES': {
@@ -35,7 +41,7 @@ class NirsoftSpider(CrawlSpider):
     }
     
     rules = (
-        Rule(LinkExtractor(allow=r'dataset/'),
+        Rule(LinkExtractor(allow=r'utils/'),
         callback='parse_item', follow = True),
     ) 
  
@@ -43,7 +49,8 @@ class NirsoftSpider(CrawlSpider):
         print( i )
 
     def parse_item(self, response):
-        file_url = response.css('li >resource-url-analytics::attr(href)').get()
+        print( response )
+        file_url = response.css('.downloadline::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
         if file_extension not in ('csv', 'json'):
@@ -53,10 +60,16 @@ class NirsoftSpider(CrawlSpider):
         item['original_file_name'] = file_url.split('/')[-1]
         yield item
 
-# @wait_for(10)
+# @wait_for(1)
 def run_spider():
     crawler = CrawlerRunner()
     d = crawler.crawl(NirsoftSpider)
+
+    return func.HttpResponse(
+            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+            status_code=200
+    )
+
     return d
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -79,7 +92,3 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # process.start()
         run_spider() 
 
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
