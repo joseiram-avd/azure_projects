@@ -6,3 +6,5 @@ azure-functions
 wget
 beautifulsoup4
 scrapy==2.6
+pyOpenSSL==22.0.0 
+crochet

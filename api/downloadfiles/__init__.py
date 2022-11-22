@@ -6,11 +6,14 @@ from bs4 import BeautifulSoup
 import azure.functions as func
 import scrapy
 from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerRunner
 import re
-
-import scrapy
+ 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+# Reactor restart
+from crochet import setup, wait_for
+setup()
 
 class DownfilesItem(scrapy.Item):
 	# define the fields for your item here like:
@@ -28,24 +31,30 @@ class NirsoftSpider(CrawlSpider):
             '__main__.DownfilesItem': 1
         },
         
-        'FILES_STORE' : R'C:\nirsoft'
+        'FILES_STORE' : 'C:/nirsoft'
     }
+    print( 'jose iram **** 1')
     rules = (
         Rule(LinkExtractor(allow=r'utils/'),
         callback='parse_item', follow = True),
     ) 
-
+ 
     def parse_item(self, response):
         file_url = response.css('.downloadline::attr(href)').get()
         file_url = response.urljoin(file_url)
-        print( response.url )
         file_extension = file_url.split('.')[-1]
-        # if file_extension not in ('zip', 'exe', 'msi'):
-        #     return
+        if file_extension not in ('zip', 'exe', 'msi'):
+            return
         item = DownfilesItem()
         item['file_urls'] = [file_url]
         item['original_file_name'] = file_url.split('/')[-1]
         yield item
+
+@wait_for(10)
+def run_spider():
+    crawler = CrawlerRunner()
+    d = crawler.crawl(NirsoftSpider)
+    return d
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -62,9 +71,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if name:
         return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
     else:
-        process = CrawlerProcess()
-        process.crawl(NirsoftSpider)
-        process.start()
+        # process = CrawlerProcess()
+        # process.crawl(NirsoftSpider)
+        # process.start()
+        run_spider() 
 
         return func.HttpResponse(
              "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
