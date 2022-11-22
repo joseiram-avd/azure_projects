@@ -40,7 +40,7 @@ class NirsoftSpider(scrapy.Spider):
         'ITEM_PIPELINES': {
             'scrapy.pipelines.files.FilesPipeline': 1
         },
-        'FILES_STORE' : r'C:/nirsoft'
+        'FILES_STORE' : 'C:/nirsoft'
     }
 
     rules = (
