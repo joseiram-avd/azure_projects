@@ -44,7 +44,8 @@ class NirsoftSpider(CrawlSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'DownfilesPipeline': 1
+            '__main__.DownfilesPipeline': 1,
+            'scrapy.pipelines.files.FilesPipeline':10
         },
         'FILES_STORE' : 'C:/nirsoft'
     }
