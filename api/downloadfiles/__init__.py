@@ -11,8 +11,11 @@ import re
  
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from scrapy.pipelines.files import FilesPipeline
-  
+ 
+
+import os
+from urllib.parse import urlparse
+
 # Reactor restart
 
 from crochet import setup, wait_for
@@ -33,7 +36,7 @@ class NirsoftSpider(CrawlSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            '__main__.DownfilesPipeline': 1
+            '__init__.DownfilesPipeline': 1
         },
         'FILES_STORE' : 'C:/nirsoft'
     }
@@ -63,13 +66,10 @@ class DownfilesItem(scrapy.Item):
 	original_file_name = scrapy.Field()
 	files = scrapy.Field
 
-class DownfilesPipeline(scrapy.pipelines.files.FilesPipeline):
-    def file_path(self, request, response=None, info=None):
-        print( 'filename' )
-        file_name: str = request.url.split("/")[-1]
-        return file_name
+from scrapy.pipelines.files import FilesPipeline
+class DownfilesPipeline(FilesPipeline):
+    pass
 
- 
 def run_spider():
     crawler = CrawlerRunner()
     d = crawler.crawl(NirsoftSpider)
