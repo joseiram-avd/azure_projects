@@ -24,35 +24,38 @@ class DownfilesItem(scrapy.Item):
 	original_file_name = scrapy.Field()
 	files = scrapy.Field
 
-class NirsoftSpider(CrawlSpider):
+class NirsoftSpider(scrapy.Spider):
     name = 'nirsoft'
     # allowed_domains = ['dados.antt.gov.br']
     # start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
 
     allowed_domains = ['www.nirsoft.net']
     start_urls = ['http://www.nirsoft.net/']
-
    
     # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+    # scrapy.pipelines.files.FilesPipeline
+    #  '__main__.DownfilesItem': 1
+
     custom_settings = {
         'ITEM_PIPELINES': {
-            '__main__.DownfilesItem': 1
+            'scrapy.pipelines.files.FilesPipeline': 1
         },
-        
-        'FILES_STORE' : 'C:/nirsoft'
+        'FILES_STORE' : r'C:/nirsoft'
     }
-    
+
     rules = (
         Rule(LinkExtractor(allow=r'utils/'),
         callback='parse_item', follow = True),
     ) 
 
+    for i in rules:
+        print( i )
+
     def parse_item(self, response):
-        print( response )
-        file_url = response.css('downloadline::attr(href)').get()
+        file_url = response.css('.downloadline::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
-        if file_extension not in ('csv', 'json'):
+        if file_extension not in ('zip', 'exe', 'msi'):
             return
         item = DownfilesItem()
         item['file_urls'] = [file_url]
@@ -61,20 +64,17 @@ class NirsoftSpider(CrawlSpider):
 
  
 def run_spider():
-    print( 'passei aqui ')
     crawler = CrawlerRunner()
     d = crawler.crawl(NirsoftSpider)
 
-    return end_spider()
+    return end_spider() 
 
-@wait_for(10)
+# @wait_for(10)
 def end_spider():
-     
     return func.HttpResponse(
             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
             status_code=200
     )
- 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -94,5 +94,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # process = CrawlerProcess()
         # process.crawl(NirsoftSpider)
         # process.start()
-        return run_spider() 
+
+        # crawler = CrawlerRunner()
+        # crawler.crawl(NirsoftSpider)
+ 
+        return run_spider()
+
+        # return func.HttpResponse(
+        #     "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+        #     status_code=200
+        # )
+
 
