@@ -13,8 +13,10 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
 # Reactor restart
-# from crochet import setup, wait_for
-# setup()
+
+from crochet import setup, wait_for
+
+setup()
 
 class DownfilesItem(scrapy.Item):
 	# define the fields for your item here like:
@@ -44,13 +46,10 @@ class NirsoftSpider(CrawlSpider):
         Rule(LinkExtractor(allow=r'utils/'),
         callback='parse_item', follow = True),
     ) 
- 
-    for i in rules:
-        print( i )
 
     def parse_item(self, response):
         print( response )
-        file_url = response.css('.downloadline::attr(href)').get()
+        file_url = response.css('downloadline::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
         if file_extension not in ('csv', 'json'):
@@ -60,17 +59,22 @@ class NirsoftSpider(CrawlSpider):
         item['original_file_name'] = file_url.split('/')[-1]
         yield item
 
-# @wait_for(1)
+ 
 def run_spider():
+    print( 'passei aqui ')
     crawler = CrawlerRunner()
     d = crawler.crawl(NirsoftSpider)
 
+    return end_spider()
+
+@wait_for(10)
+def end_spider():
+     
     return func.HttpResponse(
             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
             status_code=200
     )
-
-    return d
+ 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -90,5 +94,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # process = CrawlerProcess()
         # process.crawl(NirsoftSpider)
         # process.start()
-        run_spider() 
+        return run_spider() 
 
