@@ -23,8 +23,8 @@ class DownfilesItem(scrapy.Item):
 
 class NirsoftSpider(CrawlSpider):
     name = 'nirsoft'
-    allowed_domains = ['www.nirsoft.net']
-    start_urls = ['http://www.nirsoft.net/']
+    # allowed_domains = ['dados.antt.gov.br']
+    start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
     # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
     custom_settings = {
         'ITEM_PIPELINES': {
@@ -33,24 +33,27 @@ class NirsoftSpider(CrawlSpider):
         
         'FILES_STORE' : 'C:/nirsoft'
     }
-    print( 'jose iram **** 1')
+    
     rules = (
-        Rule(LinkExtractor(allow=r'utils/'),
+        Rule(LinkExtractor(allow=r'dataset/'),
         callback='parse_item', follow = True),
     ) 
  
+    for i in rules:
+        print( i )
+
     def parse_item(self, response):
-        file_url = response.css('.downloadline::attr(href)').get()
+        file_url = response.css('li >resource-url-analytics::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
-        if file_extension not in ('zip', 'exe', 'msi'):
+        if file_extension not in ('csv', 'json'):
             return
         item = DownfilesItem()
         item['file_urls'] = [file_url]
         item['original_file_name'] = file_url.split('/')[-1]
         yield item
 
-@wait_for(10)
+# @wait_for(10)
 def run_spider():
     crawler = CrawlerRunner()
     d = crawler.crawl(NirsoftSpider)
