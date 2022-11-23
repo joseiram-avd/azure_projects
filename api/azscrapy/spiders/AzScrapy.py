@@ -24,7 +24,7 @@ class AzScrapy(scrapy.Spider):
     name = 'AzScrapy'
     allowed_domains = ['dados.antt.gov.br']
     start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
-    # settings = get_project_settings()
+    update_settings = get_project_settings()
 
     custom_settings = {
             'ITEM_PIPELINES': {
@@ -33,8 +33,20 @@ class AzScrapy(scrapy.Spider):
             'FILES_STORE' : 'C:/nirsoft'
     }
 
-    def update_settings(cls, settings):
-        settings.setdict(cls.custom_settings or {}, priority='spider')
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        if(crawler.settings.frozen):
+            crawler.settings.frozen = False
+            crawler.settings.set("SETTING","NEW_VALUE")
+            #crawler.settings.overrides.settings.set("SETTING","NEW_VALUE")
+            crawler.settings.freeze()
+        spider = cls(*args, **kwargs)
+        spider._set_crawler(crawler)
+        return spider
+    
+    @classmethod
+    def update_settings(self):
+        pass
 
     def start_requests(self):
         for url in self.start_urls:
