@@ -15,7 +15,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
 # from  shared_code.pipelines import DownfilesPipeline #(relative)
-from azscrapy.items import DownfilesItem
+from downloadfiles.azscrapy.items import DownfilesItem
 import os
 from urllib.parse import urlparse
 

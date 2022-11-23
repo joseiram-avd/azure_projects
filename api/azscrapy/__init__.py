@@ -11,7 +11,9 @@ import re
 from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-  
+
+from downloadfiles.azscrapy.spiders import AzScrapy
+ 
 import os
 from urllib.parse import urlparse
 
@@ -21,51 +23,51 @@ from crochet import setup, wait_for
 
 # setup()
 
-class NirsoftSpider(CrawlSpider):
-    name = 'nirsoft'
-    allowed_domains = ['dados.antt.gov.br']
-    start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
+# class NirsoftSpider(CrawlSpider):
+#     name = 'nirsoft'
+#     allowed_domains = ['dados.antt.gov.br']
+#     start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
 
-    # allowed_domains = ['www.nirsoft.net']
-    # start_urls = ['http://www.nirsoft.net/']
+#     # allowed_domains = ['www.nirsoft.net']
+#     # start_urls = ['http://www.nirsoft.net/']
    
-    # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
-    # scrapy.pipelines.files.FilesPipeline
-    #  '__main__.DownfilesItem': 1
+#     # 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+#     # scrapy.pipelines.files.FilesPipeline
+#     #  '__main__.DownfilesItem': 1
 
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'shared_code.pipelines.DownfilesPipeline': 1,
+#     custom_settings = {
+#         'ITEM_PIPELINES': {
+#             'shared_code.pipelines.DownfilesPipeline': 1,
             
-        },
-        'FILES_STORE' : 'C:/nirsoft'
-    }
+#         },
+#         'FILES_STORE' : 'C:/nirsoft'
+#     }
 
-    rules = (
-        Rule(LinkExtractor(allow=r'dataset/'),
-        callback='parse_item', follow = True),
-    ) 
+#     rules = (
+#         Rule(LinkExtractor(allow=r'dataset/'),
+#         callback='parse_item', follow = True),
+#     ) 
 
-    def parse_item(self, response):
-        file_url = response.css('.resource-url-analytics::attr(href)').get()
-        file_url = response.urljoin(file_url)
-        file_extension = file_url.split('.')[-1]
-        if file_extension not in ('zip', 'json', 'csv'):
-            return
-        item = DownfilesItem()
-        item['file_urls'] = [file_url]
-        item['original_file_name'] = file_url.split('/')[-1]
-        yield item
+#     def parse_item(self, response):
+#         file_url = response.css('.resource-url-analytics::attr(href)').get()
+#         file_url = response.urljoin(file_url)
+#         file_extension = file_url.split('.')[-1]
+#         if file_extension not in ('zip', 'json', 'csv'):
+#             return
+#         item = DownfilesItem()
+#         item['file_urls'] = [file_url]
+#         item['original_file_name'] = file_url.split('/')[-1]
+#         yield item
 
-class DownfilesItem(scrapy.Item):
-	# define the fields for your item here like:
-	file_urls = scrapy.Field()
-	original_file_name = scrapy.Field()
-	files = scrapy.Field
+# class DownfilesItem(scrapy.Item):
+# 	# define the fields for your item here like:
+# 	file_urls = scrapy.Field()
+# 	original_file_name = scrapy.Field()
+# 	files = scrapy.Field
 
 def run_spider():
     crawler = CrawlerRunner()
-    d = crawler.crawl(NirsoftSpider)
+    d = crawler.crawl(AzScrapy)
 
     return end_spider() 
 
