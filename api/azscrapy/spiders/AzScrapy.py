@@ -15,14 +15,26 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
 # from  shared_code.pipelines import DownfilesPipeline #(relative)
-from downloadfiles.azscrapy.items import DownfilesItem
+from azscrapy.items import DownfilesItem
 import os
 from urllib.parse import urlparse
+from scrapy.utils.project import get_project_settings
 
-class AzScrapy(CrawlSpider):
+class AzScrapy(scrapy.Spider):
     name = 'AzScrapy'
     allowed_domains = ['dados.antt.gov.br']
     start_urls = ['https://dados.antt.gov.br/dataset/veiculos-habilitados']
+    # settings = get_project_settings()
+
+    custom_settings = {
+            'ITEM_PIPELINES': {
+                'azscrapy.pipelines.AzScrapyPipeline': 1,
+            },
+            'FILES_STORE' : 'C:/nirsoft'
+    }
+
+    def update_settings(cls, settings):
+        settings.setdict(cls.custom_settings or {}, priority='spider')
 
     def start_requests(self):
         for url in self.start_urls:

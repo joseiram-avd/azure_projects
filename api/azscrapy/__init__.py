@@ -12,8 +12,9 @@ from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
-from downloadfiles.azscrapy.spiders import AzScrapy
- 
+from azscrapy.spiders import AzScrapy
+from scrapy.utils.project import get_project_settings
+
 import os
 from urllib.parse import urlparse
 
@@ -66,8 +67,18 @@ from crochet import setup, wait_for
 # 	files = scrapy.Field
 
 def run_spider():
-    crawler = CrawlerRunner()
-    d = crawler.crawl(AzScrapy)
+    
+    # crawler = CrawlerProcess(settings=settings)
+    # d = crawler.crawl(AzScrapy)
+ 
+    process = CrawlerProcess(settings={
+            'ITEM_PIPELINES': {
+                'azscrapy.pipelines.AzScrapyPipeline': 1,
+            },
+            'FILES_STORE' : 'C:/nirsoft'} )
+ 
+    process.crawl(AzScrapy)
+    process.start()
 
     return end_spider() 
 
