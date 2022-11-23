@@ -6,8 +6,9 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy.pipelines.files import FilesPipeline
+class AzScrapyPipeline(FilesPipeline):
 
-
-class DownloadfilesPipeline:
-    def process_item(self, item, spider):
-        return item
+    def file_path(self, request, response=None, info=None):
+            file_name: str = request.url.split("/")[-1]
+            return file_name

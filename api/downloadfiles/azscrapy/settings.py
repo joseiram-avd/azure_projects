@@ -1,4 +1,4 @@
-# Scrapy settings for downloadfiles project
+# Scrapy settings for scrapytutorial project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'downloadfiles'
+BOT_NAME = 'azscrapy'
 
-SPIDER_MODULES = ['downloadfiles.spiders']
-NEWSPIDER_MODULE = 'downloadfiles.spiders'
+SPIDER_MODULES = ['azscrapy.spiders']
+NEWSPIDER_MODULE = 'azscrapy.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'downloadfiles (+http://www.yourdomain.com)'
+#USER_AGENT = 'scrapytutorial (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'downloadfiles.middlewares.DownloadfilesSpiderMiddleware': 543,
+#    'scrapytutorial.middlewares.ScrapytutorialSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'downloadfiles.middlewares.DownloadfilesDownloaderMiddleware': 543,
+#    'scrapytutorial.middlewares.ScrapytutorialDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -62,10 +62,10 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'downloadfiles.pipelines.DownloadfilesPipeline': 300,
-#}
-
+ITEM_PIPELINES = {
+   'azscrapy.pipelines.AzScrapyPipeline': 1,
+}
+FILES_STORE='C:\\nirsoft'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

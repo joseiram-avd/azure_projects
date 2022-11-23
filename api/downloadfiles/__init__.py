@@ -4,14 +4,14 @@ import scrapy
 from bs4 import BeautifulSoup
 
 import azure.functions as func
-import scrapy
+ 
 from scrapy.crawler import CrawlerProcess
 from scrapy.crawler import CrawlerRunner
 import re
 from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-
+  
 import os
 from urllib.parse import urlparse
 
@@ -20,12 +20,6 @@ from urllib.parse import urlparse
 from crochet import setup, wait_for
 
 # setup()
-
-
-class DownfilesPipeline(FilesPipeline):
-    def file_path(self, request, response=None, info=None):
-        file_name: str = request.url.split("/")[-1]
-        return file_name
 
 class NirsoftSpider(CrawlSpider):
     name = 'nirsoft'
@@ -41,7 +35,8 @@ class NirsoftSpider(CrawlSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'DownfilesPipeline': 300,
+            'shared_code.pipelines.DownfilesPipeline': 1,
+            
         },
         'FILES_STORE' : 'C:/nirsoft'
     }
@@ -50,7 +45,6 @@ class NirsoftSpider(CrawlSpider):
         Rule(LinkExtractor(allow=r'dataset/'),
         callback='parse_item', follow = True),
     ) 
- 
 
     def parse_item(self, response):
         file_url = response.css('.resource-url-analytics::attr(href)').get()
