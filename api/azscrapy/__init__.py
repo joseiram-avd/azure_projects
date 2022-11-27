@@ -119,8 +119,27 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if name:
         return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
     else:
+
+        print( get_project_settings() )
+
+        # process = CrawlerProcess(get_project_settings())
+        # process.crawl('AnttSpyder.AnttSpyder')
+        # process.start() #
+
+        # process = CrawlerProcess()
+        # process.crawl(NirsoftSpider)
+        # process.start()
+ 
+        # m = importlib.import_module('.')
+        # my_class = getattr(m, 'azscrapy.spiders.AnttSpyder')
+        # instance = my_class()
+        # print( my_class )
+ 
         crawler = CrawlerRunner()
-        crawler.crawl( eval("AzScrapy.AzScrapy") )
+        crawler.crawl( eval("BacenSpyder.BacenSpyder") )
+ 
+        # return run_spider()
+        
         return func.HttpResponse(
             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
             status_code=200

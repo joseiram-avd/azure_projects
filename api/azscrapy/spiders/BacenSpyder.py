@@ -4,8 +4,8 @@ from scrapy.spiders import Spider
 from scrapy.linkextractors import LinkExtractor
 from azscrapy.items import DownfilesItem
 
-class AzScrapy(Spider):
-    name = 'AzScrapy'
+class BacenSpyder(Spider):
+    name = 'bacenspyder'
 
     allowed_domains = ['dados.antt.gov.br']
     start_urls = ['https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes']
