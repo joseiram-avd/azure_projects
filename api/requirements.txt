@@ -3,8 +3,6 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-wget
-beautifulsoup4
-scrapy==2.7
-pyOpenSSL==22.0.0 
-crochet
+scrapy==2.6
+# pyOpenSSL==22.0.0 
+# crochet
