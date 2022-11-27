@@ -13,6 +13,7 @@ import scrapy
 # from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import Spider
 
 # from  shared_code.pipelines import DownfilesPipeline #(relative)
 from azscrapy.items import DownfilesItem
@@ -22,22 +23,30 @@ from urllib.parse import urlparse
 class AnttSpider(Spider):
     name = 'AnttSpider'
     allowed_domains = ['dados.antt.gov.br']
+
     start_urls = [
-    'https://dados.antt.gov.br/dataset/veiculos-habilitados',
-    'https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes' ,
-    'https://dados.antt.gov.br/dataset/licencas-operacionais',
-    'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
-    'https://dados.antt.gov.br/dataset/licencas-de-viagem-internacional-servico-fretado',
-    'https://dados.antt.gov.br/dataset/motoristas-habilitados',
-    'https://dados.antt.gov.br/dataset/autorizacoes-de-viagem-internacional-servico-fretado-continuo',
-    'https://dados.antt.gov.br/dataset/empresas-habilitadas',
-    'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-paradas',
-    'https://dados.antt.gov.br/dataset/monitriip-servico-regular-paradas',
-    'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens',
-    'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
-    'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
-    'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
+    'https://dados.antt.gov.br/dataset/veiculos-habilitados'
+    # 'https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes' ,
+    # 'https://dados.antt.gov.br/dataset/licencas-operacionais',
+    # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
+    # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-internacional-servico-fretado',
+    # 'https://dados.antt.gov.br/dataset/motoristas-habilitados',
+    # 'https://dados.antt.gov.br/dataset/autorizacoes-de-viagem-internacional-servico-fretado-continuo',
+    # 'https://dados.antt.gov.br/dataset/empresas-habilitadas',
+    # 'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-paradas',
+    # 'https://dados.antt.gov.br/dataset/monitriip-servico-regular-paradas',
+    # 'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens',
+    # 'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
+    # 'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
+    # 'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
     ]
+
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'azscrapy.pipelines.AzScrapyPipeline':1,
+        },
+        'FILES_STORE':'C:\\web'
+    }
 
     def start_requests(self):
         for url in self.start_urls:
