@@ -4,7 +4,7 @@ from azscrapy.items import DownfilesItem
 import json
 
 class BacenScrapy(CrawlSpider):
-    name = 'BacenScrapy'
+    name = '2BacenScrapy'
 
     allowed_domains = ['api.bcb.gov.br']
 

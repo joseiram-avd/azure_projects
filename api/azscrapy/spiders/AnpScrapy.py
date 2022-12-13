@@ -24,6 +24,13 @@ import json
 class AnpScrapy(CrawlSpider):
     name = 'AnpScrapy'
 
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'azscrapy.pipelines.AzScrapyPipeline':1,
+        },
+        'FILES_STORE':'C:/web'
+    }
+    
     allowed_domains = ['www.gov.br']
 
     start_urls = [

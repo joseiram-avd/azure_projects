@@ -24,6 +24,7 @@ class BacenSpider(Spider):
     def parse_link(self, response):
         links = set( LinkExtractor( allow=('dataset'), canonicalize=True, unique=True).extract_links(response) )
         for link in links:
+            print( link )
             yield scrapy.Request(link.url, callback=self.parse_item, dont_filter=True)
 
     def parse_item(self, response):
