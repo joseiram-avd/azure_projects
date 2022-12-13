@@ -12,7 +12,6 @@ BOT_NAME = 'azscrapy'
 SPIDER_MODULES = ['azscrapy.spiders']
 NEWSPIDER_MODULE = 'azscrapy.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'scrapytutorial (+http://www.yourdomain.com)'
 
@@ -65,7 +64,18 @@ DOWNLOAD_DELAY = 1
 ITEM_PIPELINES = {
    'azscrapy.pipelines.AzScrapyPipeline': 1,
 }
-FILES_STORE='C:\\web'
+
+# FILES_STORE='blob://general/raw/'
+FILES_STORE=r'C:\web'
+
+#GEN 1
+# AZURE_ACCESS_KEY = ""
+# AZURE_ACCOUNT_NAME = ""
+
+#GEN 2 VIBRA
+AZURE_ACCESS_KEY = "DLg0phNCifgmO+rOjw5hMgsv1mgqYLDqlMjACGqRIyrqmFbr++IPWiQvE65bySYkUK7k0H1EtB5h+AStOVkyuw=="
+AZURE_ACCOUNT_NAME = "stedlk01dtandev"
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

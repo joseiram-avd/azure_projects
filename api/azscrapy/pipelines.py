@@ -6,10 +6,11 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from scrapy.pipelines.files import FilesPipeline
+# from scrapy.pipelines.files import FilesPipeline
+from .files import FilesPipeline
 class AzScrapyPipeline(FilesPipeline):
 
     def file_path(self, request, response=None, info=None, *, item=None):
-            file_name: str = request.url.split("/")[-1]
-            # folder_name: str = file_name.split('.csv')[0]
+            # file_name: str = request.url.split("/")[-1]
+            # print( file_name )
             return item['original_file_name']
