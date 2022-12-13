@@ -9,23 +9,21 @@ import scrapy
 
 # from scrapy.crawler import CrawlerProcess
 # from scrapy.crawler import CrawlerRunner
-# import re
+import re
 # from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from scrapy.spiders import Spider
 
 # from  shared_code.pipelines import DownfilesPipeline #(relative)
 from azscrapy.items import DownfilesItem
-# import os
+import os
 from urllib.parse import urlparse
 
-class AnttSpider(Spider):
-    name = 'AnttSpider'
+class AnttScrapy(CrawlSpider):
+    name = 'AnttScrapy'
     allowed_domains = ['dados.antt.gov.br']
-
     start_urls = [
-    'https://dados.antt.gov.br/dataset/veiculos-habilitados'
+    'https://dados.antt.gov.br/dataset/veiculos-habilitados',
     # 'https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes' ,
     # 'https://dados.antt.gov.br/dataset/licencas-operacionais',
     # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
@@ -40,13 +38,6 @@ class AnttSpider(Spider):
     # 'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
     # 'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
     ]
-
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'azscrapy.pipelines.AzScrapyPipeline':1,
-        },
-        'FILES_STORE':'C:\\web'
-    }
 
     def start_requests(self):
         for url in self.start_urls:
@@ -80,14 +71,18 @@ class AnttSpider(Spider):
                 position = str(100000 + int(id))
 
         # getting the href of file
-        folder_name =  response.meta['folder_name']
+        # folder_name =  response.meta['folder_name']
+        folder_name =  "antt"
+
         file_url = response.css('.resource-url-analytics::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
+
         if file_extension not in ('csv'):
             return
 
         # item setup
+        # if "2022" in file_url:
         item = DownfilesItem()
         item['file_urls'] = [file_url]
         item['original_file_name'] = folder_name + '/' + position + '_' + file_url.split('/')[-1]
