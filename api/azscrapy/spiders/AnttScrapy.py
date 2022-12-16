@@ -68,7 +68,6 @@ class AnttScrapy(CrawlSpider):
                     yield request
 
     def parse_item(self, response):
-
         # defaul value for id seq
         position = '100000'
 
@@ -82,7 +81,7 @@ class AnttScrapy(CrawlSpider):
 
         # getting the href of file
         # folder_name =  response.meta['folder_name']
-        folder_name =  "antt"
+        # folder_name =  "antt"
 
         file_url = response.css('.resource-url-analytics::attr(href)').get()
         file_url = response.urljoin(file_url)
@@ -91,10 +90,9 @@ class AnttScrapy(CrawlSpider):
         if file_extension not in ('csv'):
             return
 
-        # item setup
-        # if "2022" in file_url:
+        # item
         item = DownfilesItem()
         item['file_urls'] = [file_url]
-        item['original_file_name'] = folder_name + '/' + position + '_' + file_url.split('/')[-1]
+        item['original_file_name'] = self.folder_name + '/' + position + '_' + file_url.split('/')[-1]
 
         yield item

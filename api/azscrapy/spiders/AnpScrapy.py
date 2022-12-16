@@ -1,4 +1,5 @@
 import scrapy
+import requests
 
 # import logging
 # import wget
@@ -35,13 +36,13 @@ class AnpScrapy(CrawlSpider):
     def __init__(self, *args, **kwargs):
         super(AnpScrapy, self).__init__(*args, **kwargs)
         self.folder_name = kwargs.get('foldername').lower()
-        self.run_after_ingestion = kwargs.get('run_after_ingestion').lower()
+        self.run_after_ingestion = kwargs.get('run_after_ingestion')
 
     def closed( self, reason ):
         url = 'https://syn-dtan-dev-01.dev.azuresynapse.net/pipelines/'
         url = url +  self.run_after_ingestion
-        
-        yield scrapy.Request(url)
+        print( url )
+        r = requests.get( url )
 
     def start_requests(self):
         for url in self.start_urls:
@@ -51,7 +52,6 @@ class AnpScrapy(CrawlSpider):
     def parse_link(self, response):
         links = set( LinkExtractor( allow=('vendas-combustiveis-segmento-m3'), canonicalize=True, unique=True).extract_links(response) )
         for link in links:
-            print( link )
             yield scrapy.Request(link.url, callback=self.parse_item, dont_filter=True )
 
     def parse_item(self, response):
