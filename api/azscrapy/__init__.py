@@ -15,16 +15,17 @@ import azscrapy.spiders
 setup()
 
 # @wait_for(10)
-def run_spider(spider_name):
+def run_spider(spider_name, foldername):
         m = __import__(f"azscrapy.spiders.{spider_name}" )
-
         settings = get_project_settings()
-        crawler = CrawlerRunner( settings )
-        crawler.crawl( eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)) )
+        crawler = CrawlerRunner(settings)
+        crawler.crawl( eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)), foldername=foldername.lower() )
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # logging.info('Python HTTP trigger function processed a request.')
     name = req.params.get('name')
+    foldername = req.params.get('foldername')
+
     if not name:
         try:
             req_body = req.get_json()
@@ -32,10 +33,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             pass
         else:
             name = req_body.get('name')
+            foldername = req_body.get('foldername')
 
     if name:
-        run_spider(name)
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+        run_spider(name, foldername)
+        return func.HttpResponse(f"{name}. This HTTP triggered function executed successfully.")
     else:
         return func.HttpResponse(
             "This HTTP triggered function executed successfully, but no spiders were executed.",

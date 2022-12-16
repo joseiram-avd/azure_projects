@@ -9,35 +9,45 @@ import scrapy
 
 # from scrapy.crawler import CrawlerProcess
 # from scrapy.crawler import CrawlerRunner
-import re
+# import re
 # from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import CrawlSpider
+# , Rule
 
 # from  shared_code.pipelines import DownfilesPipeline #(relative)
 from azscrapy.items import DownfilesItem
-import os
-from urllib.parse import urlparse
+# import os
+# from urllib.parse import urlparse
+import json
 
 class AnttScrapy(CrawlSpider):
     name = 'AnttScrapy'
+
     allowed_domains = ['dados.antt.gov.br']
+
     start_urls = [
     'https://dados.antt.gov.br/dataset/veiculos-habilitados',
-    # 'https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes' ,
-    # 'https://dados.antt.gov.br/dataset/licencas-operacionais',
-    # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
-    # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-internacional-servico-fretado',
-    # 'https://dados.antt.gov.br/dataset/motoristas-habilitados',
-    # 'https://dados.antt.gov.br/dataset/autorizacoes-de-viagem-internacional-servico-fretado-continuo',
-    # 'https://dados.antt.gov.br/dataset/empresas-habilitadas',
-    # 'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-paradas',
-    # 'https://dados.antt.gov.br/dataset/monitriip-servico-regular-paradas',
-    # 'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens',
-    # 'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
-    # 'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
-    # 'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
+    'https://dados.antt.gov.br/dataset/gerenciamento-de-autorizacoes' ,
+    'https://dados.antt.gov.br/dataset/licencas-operacionais',
+    'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
+    'https://dados.antt.gov.br/dataset/licencas-de-viagem-internacional-servico-fretado',
+    'https://dados.antt.gov.br/dataset/motoristas-habilitados',
+    'https://dados.antt.gov.br/dataset/autorizacoes-de-viagem-internacional-servico-fretado-continuo',
+    'https://dados.antt.gov.br/dataset/empresas-habilitadas',
+    'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-paradas',
+    'https://dados.antt.gov.br/dataset/monitriip-servico-regular-paradas',
+    'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens',
+    'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
+    'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
+    'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
     ]
+
+    folder_name =  "scrapy"
+
+    def __init__(self, *args, **kwargs):
+        super(AnttScrapy, self).__init__(*args, **kwargs)
+        self.folder_name = kwargs.get('foldername').lower()
 
     def start_requests(self):
         for url in self.start_urls:

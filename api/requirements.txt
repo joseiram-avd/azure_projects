@@ -4,6 +4,6 @@
 
 azure-functions
 scrapy==2.6
-scrapy-feedexporter-azure-blob-3==0.4
-# pyOpenSSL==22.0.0 
-# crochet
+azure-storage-blob==2.1.0
+pyOpenSSL==22.0.0 
+crochet

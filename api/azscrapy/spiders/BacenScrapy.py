@@ -1,10 +1,28 @@
 import scrapy
+
+# import logging
+# import wget
+# import scrapy
+# from bs4 import BeautifulSoup
+
+# import azure.functions as func
+
+# from scrapy.crawler import CrawlerProcess
+# from scrapy.crawler import CrawlerRunner
+# import re
+# from scrapy.pipelines.files import FilesPipeline
+from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider
+# , Rule
+
+# from  shared_code.pipelines import DownfilesPipeline #(relative)
 from azscrapy.items import DownfilesItem
+# import os
+# from urllib.parse import urlparse
 import json
 
 class BacenScrapy(CrawlSpider):
-    name = '2BacenScrapy'
+    name = 'BacenScrapy'
 
     allowed_domains = ['api.bcb.gov.br']
 
@@ -18,7 +36,11 @@ class BacenScrapy(CrawlSpider):
                      ['28553', 'indiceABCR_dessazonalidado']]
                      
 
-    folder_name =  "bacen"
+    folder_name =  "scrapy"
+
+    def __init__(self, *args, **kwargs):
+        super(BacenScrapy, self).__init__(*args, **kwargs)
+        self.folder_name = kwargs.get('foldername').lower()
 
     def start_requests(self):
         for tupla in self.codigos_list:

@@ -62,19 +62,19 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'azscrapy.pipelines.AzScrapyPipeline': 1,
+   'azscrapy.pipelines.AzScrapyPipeline': 1
 }
 
-# FILES_STORE='blob://general/raw/azscrapy/files'
-FILES_STORE=r'C:\web'
+FILES_STORE = r'blob://general/raw/'
+# FILES_STORE=r'C:\web'
 
 #GEN 1
 # AZURE_ACCESS_KEY = ""
 # AZURE_ACCOUNT_NAME = ""
 
 #GEN 2 VIBRA
-AZURE_ACCESS_KEY = ""
-AZURE_ACCOUNT_NAME = ""
+AZURE_ACCESS_KEY = 'DLg0phNCifgmO+rOjw5hMgsv1mgqYLDqlMjACGqRIyrqmFbr++IPWiQvE65bySYkUK7k0H1EtB5h+AStOVkyuw=='
+AZURE_ACCOUNT_NAME = 'stedlk01dtandev'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

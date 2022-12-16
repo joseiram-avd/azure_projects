@@ -307,6 +307,9 @@ class AzureBlobStore(object):
         self.BlockBlobService = BlockBlobService
         self.ContentSettings = ContentSettings
         assert uri.startswith('blob://')
+
+        print( '*************************************', uri[7:].split('/', 1) )
+
         self.container, self.prefix = uri[7:].split('/', 1)
 
     def stat_file(self, path, info):
