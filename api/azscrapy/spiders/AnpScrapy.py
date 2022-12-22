@@ -53,6 +53,15 @@ class AnpScrapy(CrawlSpider):
         
 
     def start_requests(self):
+        adf_api_version = '/createRun?api-version=2020-12-01'
+        adf_url = 'https://syn-us2-demo-jias.dev.azuresynapse.net/pipelines/'
+        adf_pipeline =  self.adf_pipeline_after_close
+        url = adf_url + adf_pipeline + adf_api_version
+
+        print ( url )
+
+        requisicao = urllib.request.urlopen(url).read()
+        
         for url in self.start_urls:
             print ( url ) 
             request = scrapy.Request(url, callback=self.parse_link)
