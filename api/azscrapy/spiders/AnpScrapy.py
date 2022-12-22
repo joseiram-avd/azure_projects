@@ -50,7 +50,6 @@ class AnpScrapy(CrawlSpider):
         print ( url )
 
         requisicao = urllib.request.urlopen(url).read()
-        
 
     def start_requests(self):
         adf_api_version = '/createRun?api-version=2020-12-01'
