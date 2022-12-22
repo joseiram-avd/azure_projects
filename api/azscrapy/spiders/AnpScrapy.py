@@ -1,7 +1,7 @@
 import scrapy
-import requests
+import urllib
 
-# import logging
+import logging
 # import wget
 # import scrapy
 # from bs4 import BeautifulSoup
@@ -31,21 +31,30 @@ class AnpScrapy(CrawlSpider):
          'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/vdpb/vcs'
     ]
 
+    # default values for missing scrapy parameters 
     folder_name =  "scrapy"
+    adf_pipeline_after_close = 'PL_Run_Wait'
+
 
     def __init__(self, *args, **kwargs):
         super(AnpScrapy, self).__init__(*args, **kwargs)
         self.folder_name = kwargs.get('foldername').lower()
-        self.run_after_ingestion = kwargs.get('run_after_ingestion')
+        self.adf_pipeline_after_close = kwargs.get('run_after_ingestion')
 
     def closed( self, reason ):
-        url = 'https://syn-dtan-dev-01.dev.azuresynapse.net/pipelines/'
-        url = url +  self.run_after_ingestion
-        print( url )
-        r = requests.get( url )
+        adf_api_version = '/createRun?api-version=2020-12-01'
+        adf_url = 'https://syn-us2-demo-jias.dev.azuresynapse.net/pipelines/'
+        adf_pipeline =  self.adf_pipeline_after_close
+        url = adf_url + adf_pipeline + adf_api_version
+
+        print ( url )
+
+        requisicao = urllib.request.urlopen(url).read()
+        
 
     def start_requests(self):
         for url in self.start_urls:
+            print ( url ) 
             request = scrapy.Request(url, callback=self.parse_link)
             yield request
 
