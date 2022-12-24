@@ -65,7 +65,7 @@ ITEM_PIPELINES = {
    'azscrapy.pipelines.AzScrapyPipeline': 1
 }
 
-FILES_STORE = r'blob://general/raw/'
+FILES_STORE='blob://general/raw/'
 # FILES_STORE=r'C:\web'
 
 #GEN 1
@@ -73,8 +73,11 @@ FILES_STORE = r'blob://general/raw/'
 # AZURE_ACCOUNT_NAME = ""
 
 #GEN 2 VIBRA
-AZURE_ACCESS_KEY = 'DLg0phNCifgmO+rOjw5hMgsv1mgqYLDqlMjACGqRIyrqmFbr++IPWiQvE65bySYkUK7k0H1EtB5h+AStOVkyuw=='
-AZURE_ACCOUNT_NAME = 'stedlk01dtandev'
+# AZURE_ACCESS_KEY = 'DLg0phNCifgmO+rOjw5hMgsv1mgqYLDqlMjACGqRIyrqmFbr++IPWiQvE65bySYkUK7k0H1EtB5h+AStOVkyuw=='
+# AZURE_ACCOUNT_NAME = 'stedlk01dtandev'
+
+AZURE_ACCESS_KEY = "fLfqtnqLqwpWmRbT4BRasXcsjaQFrKe4mgWs5+QBK/BIJ3mERf2IpPqOEc90z2CitCtcaa2INeHl/Gdqr81qgg=="
+AZURE_ACCOUNT_NAME = 'sajoseiram'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

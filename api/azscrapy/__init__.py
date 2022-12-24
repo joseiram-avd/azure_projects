@@ -15,16 +15,17 @@ import azscrapy.spiders
 setup()
 
 # @wait_for(10)
-def run_spider(spider_name, foldername):
+def run_spider(spider_name, foldername, run_after_ingestion):
         m = __import__(f"azscrapy.spiders.{spider_name}" )
         settings = get_project_settings()
         crawler = CrawlerRunner(settings)
-        crawler.crawl( eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)), foldername=foldername.lower() )
+        crawler.crawl( eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)), foldername=foldername.lower(), run_after_ingestion=run_after_ingestion )
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # logging.info('Python HTTP trigger function processed a request.')
     name = req.params.get('name')
     foldername = req.params.get('foldername')
+    run_after_ingestion = req.params.get('run_after_ingestion')
 
     if not name:
         try:
@@ -34,9 +35,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         else:
             name = req_body.get('name')
             foldername = req_body.get('foldername')
-
+            run_after_ingestion = req_body.get('run_after_ingestion')
+          
     if name:
-        run_spider(name, foldername)
+        run_spider(name, foldername, run_after_ingestion)
         return func.HttpResponse(f"{name}. This HTTP triggered function executed successfully.")
     else:
         return func.HttpResponse(
