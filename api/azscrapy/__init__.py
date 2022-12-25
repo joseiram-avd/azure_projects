@@ -39,10 +39,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
           
     if name:
         run_spider(name, foldername, run_after_ingestion)
-        return func.HttpResponse(f"{name}. This HTTP triggered function executed successfully.")
+        return func.HttpResponse(f"{name}. This HTTP-triggered function executed successfully.")
     else:
         return func.HttpResponse(
-            "This HTTP triggered function executed successfully, but no spiders were executed.",
+            "This HTTP-triggered function was executed successfully, but no spiders ran.",
             status_code=200
         )
 

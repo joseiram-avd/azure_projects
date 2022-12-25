@@ -1,29 +1,12 @@
 import scrapy
 
-# import logging
-# import wget
-# import scrapy
-# from bs4 import BeautifulSoup
-
-# import azure.functions as func
-
-# from scrapy.crawler import CrawlerProcess
-# from scrapy.crawler import CrawlerRunner
-# import re
-# from scrapy.pipelines.files import FilesPipeline
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider
-# , Rule
-
-# from  shared_code.pipelines import DownfilesPipeline #(relative)
 from azscrapy.items import DownfilesItem
-# import os
-# from urllib.parse import urlparse
-import json
+from azscrapy.middlewares import CrawlSpiderMiddleware
 
-class AnttScrapy(CrawlSpider):
+class AnttScrapy(CrawlSpiderMiddleware):
     name = 'AnttScrapy'
-
     allowed_domains = ['dados.antt.gov.br']
 
     start_urls = [
@@ -43,12 +26,6 @@ class AnttScrapy(CrawlSpider):
     'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
     ]
 
-    folder_name =  "scrapy"
-
-    def __init__(self, *args, **kwargs):
-        super(AnttScrapy, self).__init__(*args, **kwargs)
-        self.folder_name = kwargs.get('foldername').lower()
-
     def start_requests(self):
         for url in self.start_urls:
             yield scrapy.Request(url, callback=self.parse_link, dont_filter=True)
@@ -60,11 +37,11 @@ class AnttScrapy(CrawlSpider):
             file_url = response.urljoin(link.url.lower())
             file_extension = file_url.split('.')[-1]
 
-            if file_extension not in ('pdf', 'json', 'csv'):
+            if file_extension not in ('csv'):
                 folder_name = link.text.strip().lower()
                 if 'csv' in folder_name:
                     request = scrapy.Request(link.url, callback=self.parse_item, dont_filter=True )
-                    request.meta['folder_name'] = folder_name
+
                     yield request
 
     def parse_item(self, response):
@@ -79,10 +56,6 @@ class AnttScrapy(CrawlSpider):
                 id = tr.css('td::text').get()
                 position = str(100000 + int(id))
 
-        # getting the href of file
-        # folder_name =  response.meta['folder_name']
-        # folder_name =  "antt"
-
         file_url = response.css('.resource-url-analytics::attr(href)').get()
         file_url = response.urljoin(file_url)
         file_extension = file_url.split('.')[-1]
@@ -93,6 +66,6 @@ class AnttScrapy(CrawlSpider):
         # item
         item = DownfilesItem()
         item['file_urls'] = [file_url]
-        item['original_file_name'] = self.folder_name + '/' + position + '_' + file_url.split('/')[-1]
+        item['original_file_name'] = self._FOLDER_NAME + '/' + position + '_' + file_url.split('/')[-1]
 
         yield item

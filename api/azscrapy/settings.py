@@ -24,7 +24,7 @@ CONCURRENT_REQUESTS = 16
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 0
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -62,7 +62,7 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'azscrapy.pipelines.AzScrapyPipeline': 1
+   'azscrapy.pipelines.AzScrapyPipeline': 1,
 }
 
 FILES_STORE='blob://general/raw/'
@@ -73,12 +73,12 @@ FILES_STORE='blob://general/raw/'
 # AZURE_ACCOUNT_NAME = ""
 
 #GEN 2 VIBRA
-# AZURE_ACCESS_KEY = 'DLg0phNCifgmO+rOjw5hMgsv1mgqYLDqlMjACGqRIyrqmFbr++IPWiQvE65bySYkUK7k0H1EtB5h+AStOVkyuw=='
-# AZURE_ACCOUNT_NAME = 'stedlk01dtandev'
+# AZURE_ACCESS_KEY = ""
+# AZURE_ACCOUNT_NAME = ""
 
-AZURE_ACCESS_KEY = "fLfqtnqLqwpWmRbT4BRasXcsjaQFrKe4mgWs5+QBK/BIJ3mERf2IpPqOEc90z2CitCtcaa2INeHl/Gdqr81qgg=="
-AZURE_ACCOUNT_NAME = 'sajoseiram'
-
+# jias demo
+# AZURE_ACCESS_KEY = ""
+# AZURE_ACCOUNT_NAME = ""
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
