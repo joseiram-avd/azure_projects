@@ -99,3 +99,14 @@ FILES_STORE='blob://general/raw/'
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+#
+# AZURE_ACCOUNT_URL = "https://sajoseiram.blob.core.windows.net/"
+# AZURE_ACCOUNT_KEY = "fLfqtnqLqwpWmRbT4BRasXcsjaQFrKe4mgWs5+QBK/BIJ3mERf2IpPqOEc90z2CitCtcaa2INeHl/Gdqr81qgg=="
+#
+# FEED_STORAGES = {'azure': 'azscrapy.files.AzureFeedStorage'}
+#
+# FEEDS = {
+#     "blob://general/raw/item.json": {
+#         "format": "json"
+#     }
+# }
