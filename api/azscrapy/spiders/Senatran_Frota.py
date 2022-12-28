@@ -6,7 +6,6 @@ from azscrapy.items import DownfilesItem
 import os
 from urllib.parse import urlparse
 import logging
-
 from azscrapy.middlewares import AzScrapyCrawlSpiderFiles
 
 

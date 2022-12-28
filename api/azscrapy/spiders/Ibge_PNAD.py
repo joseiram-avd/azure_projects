@@ -4,9 +4,7 @@ import scrapy
 from scrapy.spiders import CrawlSpider
 from azscrapy.items import DownfilesItem
 import logging
-
 from azscrapy.middlewares import AzScrapyCrawlSpiderFiles
-
 
 class Ibge_PNAD(AzScrapyCrawlSpiderFiles):
 
