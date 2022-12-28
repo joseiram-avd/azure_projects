@@ -10,4 +10,4 @@ crochet
 azure-identity
 azure-synapse-artifacts==0.14.0
 azure-keyvault-keys==4.7.0
-pandas==1.5.2
+pandas==1.2.4
