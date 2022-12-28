@@ -10,19 +10,19 @@ import logging
 from azscrapy.middlewares import AzScrapyCrawlSpiderFiles
 
 class AnttScrapy(AzScrapyCrawlSpiderFiles):
-    logger = logging.getLogger(__name__)
-
+    
+    logger = logging.getLogger(__name__) 
     name = 'AnttScrapy'
     allowed_domains = ['dados.antt.gov.br']
     start_urls = [
       'https://dados.antt.gov.br/dataset/veiculos-habilitados',
-      # 'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
-      # 'https://dados.antt.gov.br/dataset/motoristas-habilitados'
-      # 'https://dados.antt.gov.br/dataset/empresas-habilitadas'
-      # 'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
-      # 'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
-      # 'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
-      # 'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens'
+      'https://dados.antt.gov.br/dataset/licencas-de-viagem-nacional-servico-fretado',
+      'https://dados.antt.gov.br/dataset/motoristas-habilitados'
+      'https://dados.antt.gov.br/dataset/empresas-habilitadas'
+      'https://dados.antt.gov.br/dataset/monitriip-servico-regular-viagens',
+      'https://dados.antt.gov.br/dataset/monitriip-bilhetes-de-passagem',
+      'https://dados.antt.gov.br/dataset/solicitacoes-de-novos-mercados',
+      'https://dados.antt.gov.br/dataset/monitriip-servico-fretado-viagens'
      ]
 
 
