@@ -114,7 +114,8 @@ class AzScrapyCrawlSpider(CrawlSpider):
 
     # default values from env variables
     _FOLDER_NAME = "scrapy"
-    _PIPELINE_NAME = None
+    _PIPELINE_NAME = 'PL_Primary_Raw_Scrapy_Log'
+    _SCRAPY_ID = 0
     _FN_AZURE_CLIENT_ID = os.getenv("FN_AZURE_CLIENT_ID")
     _FN_AZURE_CLIENT_SECRET = os.getenv("FN_AZURE_CLIENT_SECRET")
     _FN_AZURE_TENANT_ID = os.getenv("FN_AZURE_TENANT_ID")
@@ -122,6 +123,7 @@ class AzScrapyCrawlSpider(CrawlSpider):
     _FN_RAW_STORAGE_ACCOUNT_KEY = os.getenv("FN_RAW_STORAGE_ACCOUNT_KEY")
     _FN_RAW_STORAGE_ACCOUNT_NAME = os.getenv("FN_RAW_STORAGE_ACCOUNT_NAME")
     _FN_SYNAPSE_WORKSPACE_NAME = os.getenv("FN_SYNAPSE_WORKSPACE_NAME")
+    _SYNAPSE_ENDPOINT = f"https://{_FN_SYNAPSE_WORKSPACE_NAME}.dev.azuresynapse.net"
 
     # settings para feedexport on azure
     _FN_AZURE_ACCOUT_URL = f"https://{_FN_RAW_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
@@ -140,11 +142,11 @@ class AzScrapyCrawlSpider(CrawlSpider):
                 client_id=client_id, #  your client id
                 client_secret=client_secret, # your client secret
             )
-            return ArtifactsClient(service_principal_credential,f"https://{workspace_name}.dev.azuresynapse.net")
+            return ArtifactsClient(service_principal_credential, self._SYNAPSE_ENDPOINT)
         else:
             # log in using the credentials on the system (i.e., using the credentials used for configuring the Azure CLI)
             cli_credentials = DefaultAzureCredential()
-            return ArtifactsClient(cli_credentials,f"https://{workspace_name}.dev.azuresynapse.net")
+            return ArtifactsClient(cli_credentials, self._SYNAPSE_ENDPOINT)
 
     def __init__(self, *args, **kwargs):
         super(AzScrapyCrawlSpider, self).__init__(*args, **kwargs)
@@ -155,21 +157,31 @@ class AzScrapyCrawlSpider(CrawlSpider):
         if kwargs.get('run_after_ingestion'):
             self._PIPELINE_NAME = kwargs.get('run_after_ingestion')
 
+        if kwargs.get('scrapy_id'):
+            if int(kwargs.get('scrapy_id')):
+                self._SCRAPY_ID = int(kwargs.get('scrapy_id'))
+
+
     # connecting to synapse
     def closed( self, reason ):
 
-        if (self._PIPELINE_NAME
-            and self._FN_AZURE_TENANT_ID
+        if (
+                self._FN_AZURE_TENANT_ID
             and self._FN_AZURE_CLIENT_ID
             and self._FN_AZURE_CLIENT_SECRET
-            and self._FN_SYNAPSE_WORKSPACE_NAME):
+            and self._FN_SYNAPSE_WORKSPACE_NAME
+            and self._SCRAPY_ID > 0 ):
+
 
             self._CLIENT = self.connect(self._FN_AZURE_TENANT_ID, self._FN_AZURE_CLIENT_ID, self._FN_AZURE_CLIENT_SECRET, self._FN_SYNAPSE_WORKSPACE_NAME)
 
             if self._CLIENT:
                 p_pipeline_name = self._PIPELINE_NAME if self._PIPELINE_NAME  else self._FN_PIPELINE_DEFAULT_NAME
-                response = self._CLIENT.pipeline.create_pipeline_run(p_pipeline_name)
+
+                response = self._CLIENT.pipeline.create_pipeline_run(p_pipeline_name, parameters={'id':self._SCRAPY_ID, 'ws_end_point_url':self._SYNAPSE_ENDPOINT})
+
                 run_id = response.run_id
+
                 self.logger.info(run_id)
             else:
                 self.logger.error(f"{self.name} was closed. There is no AzureCredential")
