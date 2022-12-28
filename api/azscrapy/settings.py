@@ -59,6 +59,8 @@ DOWNLOAD_DELAY = 0
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
 
+DOWNLOADER_CLIENTCONTEXTFACTORY = 'azscrapy.contextfactory.LegacyConnectContextFactory'
+# DOWNLOADER_CLIENT_TLS_METHOD = 'TLSv1.1'
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
