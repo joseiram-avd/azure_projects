@@ -187,9 +187,7 @@ class S3FilesStore:
 
 
 class GCSFilesStore:
-
     GCS_PROJECT_ID = None
-
     CACHE_CONTROL = 'max-age=172800'
 
     # The bucket's default object ACL will be applied to the object.
@@ -251,7 +249,6 @@ class GCSFilesStore:
 
 
 class FTPFilesStore:
-
     FTP_USERNAME = None
     FTP_PASSWORD = None
     USE_ACTIVE_MODE = None
@@ -304,6 +301,7 @@ class AzureBlobStore(object):
 
     def __init__(self, uri):
         from azure.storage.blob import BlockBlobService, ContentSettings
+
         self.BlockBlobService = BlockBlobService
         self.ContentSettings = ContentSettings
         assert uri.startswith('blob://')
@@ -369,6 +367,7 @@ class AzureBlobStore(object):
             else:
                 extra[kwarg] = value
         return extra
+
 
 class FilesPipeline(MediaPipeline):
     """Abstract pipeline that implement the file downloading
