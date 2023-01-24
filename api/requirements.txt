@@ -2,10 +2,10 @@
 # The Python Worker is managed by Azure Functions platform
 # Manually managing azure-functions-worker may cause unexpected issues
 
-azure-functions
+azure-functions==1.12.0
 scrapy==2.7.1
 azure-storage-blob==2.1.0
-pyOpenSSL==22.0.0 
+# pyOpenSSL==22.0.0 
 crochet
 azure-identity
 azure-synapse-artifacts==0.14.0
