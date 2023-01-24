@@ -15,7 +15,7 @@ import azscrapy.spiders
 setup()
 
 # @wait_for(10)
-# deploy 24 jan 2023
+# deploy 24 jan 2023 001
 def run_spider(spider_name, foldername, run_after_ingestion, scrapy_id):
         m = __import__(f"azscrapy.spiders.{spider_name}" )
         settings = get_project_settings()
