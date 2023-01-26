@@ -109,13 +109,13 @@ class AzScrapyDownloaderMiddleware:
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-
-class CrawlSpiderMiddleware(CrawlSpider):
+class AzScrapyCrawlSpider(CrawlSpider):
     # This class implement the azure synapse pipeline caller
 
     # default values from env variables
     _FOLDER_NAME = "scrapy"
-    _PIPELINE_NAME = "PL_Run_Wait"
+    _PIPELINE_NAME = 'PL_Primary_Raw_Scrapy_Log'
+    _SCRAPY_ID = 0
     _FN_AZURE_CLIENT_ID = os.getenv("FN_AZURE_CLIENT_ID")
     _FN_AZURE_CLIENT_SECRET = os.getenv("FN_AZURE_CLIENT_SECRET")
     _FN_AZURE_TENANT_ID = os.getenv("FN_AZURE_TENANT_ID")
@@ -123,15 +123,14 @@ class CrawlSpiderMiddleware(CrawlSpider):
     _FN_RAW_STORAGE_ACCOUNT_KEY = os.getenv("FN_RAW_STORAGE_ACCOUNT_KEY")
     _FN_RAW_STORAGE_ACCOUNT_NAME = os.getenv("FN_RAW_STORAGE_ACCOUNT_NAME")
     _FN_SYNAPSE_WORKSPACE_NAME = os.getenv("FN_SYNAPSE_WORKSPACE_NAME")
+    _SYNAPSE_ENDPOINT = f"https://{_FN_SYNAPSE_WORKSPACE_NAME}.dev.azuresynapse.net"
+
+    # settings para feedexport on azure
+    _FN_AZURE_ACCOUT_URL = f"https://{_FN_RAW_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
+    _FN_AZURE_ACCOUNT_KEY = _FN_RAW_STORAGE_ACCOUNT_KEY
 
     # synapse client object used to run pipelines
     _CLIENT = None
-
-    # custom settings for azure datalake integration
-    custom_settings = {
-         'AZURE_ACCESS_KEY':_FN_RAW_STORAGE_ACCOUNT_KEY,
-         'AZURE_ACCOUNT_NAME':_FN_RAW_STORAGE_ACCOUNT_NAME
-    }
 
     # This method connect to the azure
     def connect(self, tenant_id, client_id, client_secret, workspace_name):
@@ -143,14 +142,14 @@ class CrawlSpiderMiddleware(CrawlSpider):
                 client_id=client_id, #  your client id
                 client_secret=client_secret, # your client secret
             )
-            return ArtifactsClient(service_principal_credential,f"https://{workspace_name}.dev.azuresynapse.net")
+            return ArtifactsClient(service_principal_credential, self._SYNAPSE_ENDPOINT)
         else:
             # log in using the credentials on the system (i.e., using the credentials used for configuring the Azure CLI)
             cli_credentials = DefaultAzureCredential()
-            return ArtifactsClient(cli_credentials,f"https://{workspace_name}.dev.azuresynapse.net")
+            return ArtifactsClient(cli_credentials, self._SYNAPSE_ENDPOINT)
 
     def __init__(self, *args, **kwargs):
-        super(CrawlSpiderMiddleware, self).__init__(*args, **kwargs)
+        super(AzScrapyCrawlSpider, self).__init__(*args, **kwargs)
 
         if kwargs.get('foldername'):
             self._FOLDER_NAME = kwargs.get('foldername')
@@ -158,13 +157,89 @@ class CrawlSpiderMiddleware(CrawlSpider):
         if kwargs.get('run_after_ingestion'):
             self._PIPELINE_NAME = kwargs.get('run_after_ingestion')
 
+        if kwargs.get('scrapy_id'):
+            if int(kwargs.get('scrapy_id')):
+                self._SCRAPY_ID = int(kwargs.get('scrapy_id'))
+
+
     # connecting to synapse
     def closed( self, reason ):
-        self._CLIENT = self.connect(self._FN_AZURE_TENANT_ID, self._FN_AZURE_CLIENT_ID, self._FN_AZURE_CLIENT_SECRET, self._FN_SYNAPSE_WORKSPACE_NAME)
-        if self._CLIENT:
-            p_pipeline_name = self._PIPELINE_NAME if self._PIPELINE_NAME  else self._FN_PIPELINE_DEFAULT_NAME
-            response = self._CLIENT.pipeline.create_pipeline_run(p_pipeline_name)
-            run_id = response.run_id
-            self.logger.info(run_id)
-        else:
-            self.logger.error(f"{self.name} was closed. There is no AzureCredential")
+
+        if (
+                self._FN_AZURE_TENANT_ID
+            and self._FN_AZURE_CLIENT_ID
+            and self._FN_AZURE_CLIENT_SECRET
+            and self._FN_SYNAPSE_WORKSPACE_NAME
+            and self._SCRAPY_ID > 0 ):
+
+
+            self._CLIENT = self.connect(self._FN_AZURE_TENANT_ID, self._FN_AZURE_CLIENT_ID, self._FN_AZURE_CLIENT_SECRET, self._FN_SYNAPSE_WORKSPACE_NAME)
+
+            if self._CLIENT:
+                p_pipeline_name = self._PIPELINE_NAME if self._PIPELINE_NAME  else self._FN_PIPELINE_DEFAULT_NAME
+
+                response = self._CLIENT.pipeline.create_pipeline_run(p_pipeline_name, parameters={'id':self._SCRAPY_ID, 'ws_end_point_url':self._SYNAPSE_ENDPOINT})
+
+                run_id = response.run_id
+
+                self.logger.info(run_id)
+            else:
+                self.logger.error(f"{self.name} was closed. There is no AzureCredential")
+
+
+class AzScrapyCrawlSpiderFiles(AzScrapyCrawlSpider):
+
+    _FOLDER_NAME = "scrapy"
+    _PIPELINE_NAME = None
+    _FN_AZURE_CLIENT_ID = os.getenv("FN_AZURE_CLIENT_ID")
+    _FN_AZURE_CLIENT_SECRET = os.getenv("FN_AZURE_CLIENT_SECRET")
+    _FN_AZURE_TENANT_ID = os.getenv("FN_AZURE_TENANT_ID")
+    _FN_PIPELINE_DEFAULT_NAME = os.getenv("FN_PIPELINE_DEFAULT_NAME")
+    _FN_RAW_STORAGE_ACCOUNT_KEY = os.getenv("FN_RAW_STORAGE_ACCOUNT_KEY")
+    _FN_RAW_STORAGE_ACCOUNT_NAME = os.getenv("FN_RAW_STORAGE_ACCOUNT_NAME")
+    _FN_SYNAPSE_WORKSPACE_NAME = os.getenv("FN_SYNAPSE_WORKSPACE_NAME")
+
+    # settings para feedexport on azure
+    _FN_AZURE_ACCOUT_URL = f"https://{_FN_RAW_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
+    _FN_AZURE_ACCOUNT_KEY = _FN_RAW_STORAGE_ACCOUNT_KEY
+
+    custom_settings = {
+             'AZURE_ACCESS_KEY': _FN_RAW_STORAGE_ACCOUNT_KEY,
+             'AZURE_ACCOUNT_NAME':_FN_RAW_STORAGE_ACCOUNT_NAME,
+             'AZURE_ACCOUNT_URL':_FN_AZURE_ACCOUT_URL,
+             'AZURE_ACCOUNT_KEY':_FN_AZURE_ACCOUNT_KEY,
+    }
+
+    def __init__(self, *args, **kwargs):
+        super(AzScrapyCrawlSpiderFiles, self).__init__(*args, **kwargs)
+
+
+#
+# class AzScrapyCrawlSpiderFeedExport(AzScrapyCrawlSpider):
+#
+#     _FOLDER_NAME = "scrapy"
+#     _PIPELINE_NAME = None
+#     _FN_AZURE_CLIENT_ID = os.getenv("FN_AZURE_CLIENT_ID")
+#     _FN_AZURE_CLIENT_SECRET = os.getenv("FN_AZURE_CLIENT_SECRET")
+#     _FN_AZURE_TENANT_ID = os.getenv("FN_AZURE_TENANT_ID")
+#     _FN_PIPELINE_DEFAULT_NAME = os.getenv("FN_PIPELINE_DEFAULT_NAME")
+#     _FN_RAW_STORAGE_ACCOUNT_KEY = os.getenv("FN_RAW_STORAGE_ACCOUNT_KEY")
+#     _FN_RAW_STORAGE_ACCOUNT_NAME = os.getenv("FN_RAW_STORAGE_ACCOUNT_NAME")
+#     _FN_SYNAPSE_WORKSPACE_NAME = os.getenv("FN_SYNAPSE_WORKSPACE_NAME")
+#
+#     # settings para feedexport on azure
+#     _FN_AZURE_ACCOUT_URL = f"https://{_FN_RAW_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
+#     _FN_AZURE_ACCOUNT_KEY = _FN_RAW_STORAGE_ACCOUNT_KEY
+#     _FEEDS = {f"azure://{_FN_RAW_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/general/raw/%(name)s/item.json":{"format": "json", "overwrite":"True"}}
+#
+#     custom_settings = {
+#              'AZURE_ACCESS_KEY': _FN_RAW_STORAGE_ACCOUNT_KEY,
+#              'AZURE_ACCOUNT_NAME':_FN_RAW_STORAGE_ACCOUNT_NAME,
+#              'AZURE_ACCOUNT_URL':_FN_AZURE_ACCOUT_URL,
+#              'AZURE_ACCOUNT_KEY':_FN_AZURE_ACCOUNT_KEY,
+#              'FEED_STORAGES':{'azure': 'azscrapy.files.AzureFeedStorage'},
+#              f'FEEDS':_FEEDS
+#     }
+#
+#     def __init__(self, *args, **kwargs):
+#         super(AzScrapyCrawlSpiderFeedExport, self).__init__(*args, **kwargs)

@@ -59,6 +59,8 @@ DOWNLOAD_DELAY = 0
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
 
+DOWNLOADER_CLIENTCONTEXTFACTORY = 'azscrapy.contextfactory.LegacyConnectContextFactory'
+# DOWNLOADER_CLIENT_TLS_METHOD = 'TLSv1.1'
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
@@ -99,3 +101,14 @@ FILES_STORE='blob://general/raw/'
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+#
+# AZURE_ACCOUNT_URL = "https://sajoseiram.blob.core.windows.net/"
+# AZURE_ACCOUNT_KEY = "fLfqtnqLqwpWmRbT4BRasXcsjaQFrKe4mgWs5+QBK/BIJ3mERf2IpPqOEc90z2CitCtcaa2INeHl/Gdqr81qgg=="
+#
+# FEED_STORAGES = {'azure': 'azscrapy.files.AzureFeedStorage'}
+#
+# FEEDS = {
+#     "blob://general/raw/item.json": {
+#         "format": "json"
+#     }
+# }
