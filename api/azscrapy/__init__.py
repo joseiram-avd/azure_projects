@@ -1,26 +1,24 @@
-# import logging
-# import scrapy
+
 import azure.functions as func
 from scrapy.crawler import CrawlerRunner
-# import re
-# from scrapy.linkextractors import LinkExtractor
+
 from scrapy.utils.project import get_project_settings
-# from urllib.parse import urlparse
 
 # Reactor restart
 from crochet import setup, wait_for
-# import importlib
 import azscrapy.spiders
 
 setup()
 
-# Teste deploy from local
-# @wait_for(10)
 def run_spider(spider_name, foldername, run_after_ingestion, scrapy_id):
         m = __import__(f"azscrapy.spiders.{spider_name}" )
         settings = get_project_settings()
         crawler = CrawlerRunner(settings)
-        crawler.crawl( eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)), foldername=foldername.lower(), run_after_ingestion=run_after_ingestion,  scrapy_id=scrapy_id )
+        crawler.crawl( 
+            eval("azscrapy.spiders.{}.{}".format(spider_name, spider_name)), 
+            foldername=foldername.lower(), run_after_ingestion=run_after_ingestion,  
+            scrapy_id=scrapy_id 
+        )
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # logging.info('Python HTTP trigger function processed a request.')
